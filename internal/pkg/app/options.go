@@ -5,6 +5,7 @@ import cliflag "github.com/marmotedu/component-base/pkg/cli/flag"
 // 定义应用框架的各种配置的抽象接口
 
 // CliOptions 抽象接口，用于从命令行读取参数的配置
+// 将调用命令和具体命令实现细节分离（抽象工厂方法）
 type CliOptions interface {
 	Flags() (fss cliflag.NamedFlagSets)
 	Validate() []error

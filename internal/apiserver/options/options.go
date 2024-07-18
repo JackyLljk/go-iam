@@ -2,7 +2,8 @@ package options
 
 import cliflag "github.com/marmotedu/component-base/pkg/cli/flag"
 
-// Options 基本参数（可用于构建命令行参数 CliOptions 和应用配置）
+// Options 基本参数（是一个配置数据结构，可用来构建应用框架，也作为应用配置的输入）
+// Options 实现了 CliOptions，可以在构建 cobra 命令行应用框架时使用
 type Options struct {
 	//GenericServerRunOptions *genericoptions.ServerRunOptions       `json:"server"   mapstructure:"server"`
 	//GRPCOptions             *genericoptions.GRPCOptions            `json:"grpc"     mapstructure:"grpc"`

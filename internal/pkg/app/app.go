@@ -7,6 +7,7 @@ import (
 	"github.com/marmotedu/component-base/pkg/term"
 	"github.com/marmotedu/component-base/pkg/version"
 	"github.com/marmotedu/component-base/pkg/version/verflag"
+	"github.com/marmotedu/errors"
 	"github.com/marmotedu/log"
 	"os"
 
@@ -71,7 +72,7 @@ func WithDescription(desc string) Option {
 	}
 }
 
-// WithDefaultValidArgs 默认配置为不需要传入命令行参数，只使用根命令 run
+// WithDefaultValidArgs 默认配置为不需要传入命令行参数，只使用根命令 run，e.g. go run xxx.go -flags
 // 当你运行命令并提供任何参数时，程序将输出错误消息并退出，因为 WithDefaultValidArgs 配置的验证逻辑不允许任何参数
 func WithDefaultValidArgs() Option {
 	return func(a *App) {
@@ -134,6 +135,7 @@ func NewApp(name string, basename string, opts ...Option) *App {
 
 func (a *App) buildCommand() {
 	// 创建命令行命令
+	// app_name command arg --flag
 	cmd := cobra.Command{
 		Use:   FormatBaseName(a.basename),
 		Short: a.name,
@@ -142,7 +144,7 @@ func (a *App) buildCommand() {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 
-		// 将 App 中的命令参数设置在命令中
+		// 将 App 的参数注册到 cobra 命令
 		Args: a.args,
 	}
 
@@ -153,7 +155,13 @@ func (a *App) buildCommand() {
 	cmd.SetOut(os.Stdout)
 	cmd.SetErr(os.Stderr)
 
-	// 初始化flags，且标志是排序的
+	// 注册了应用启动回调函数，定义 cobra 启动程序的逻辑
+	if a.runFunc != nil {
+		cmd.RunE = a.runCommand
+	}
+
+	// 配置标志
+	// 初始化 flags，且标志是排序的
 	cmd.Flags().SortFlags = true
 	cliflag.InitFlags(cmd.Flags())
 
@@ -167,12 +175,7 @@ func (a *App) buildCommand() {
 		cmd.SetHelpCommand(helpCommand(FormatBaseName(a.basename)))
 	}
 
-	// 注册了应用启动回调函数，
-	if a.runFunc != nil {
-		cmd.RunE = a.runCommand
-	}
-
-	// 将 options 的 flags 添加到 cobra 实例的 FlagSet 中
+	// 将命令行标志 flags 添加到 cobra 实例的 FlagSet 中
 	var namedFlagSets cliflag.NamedFlagSets
 	if a.options != nil {
 		// 这里的 Options 实现了 Flags() (fss cliflag.NamedFlagSets) 方法
@@ -204,8 +207,8 @@ func (a *App) buildCommand() {
 	a.cmd = &cmd
 }
 
+// Run cobra 调用命令的执行入口(在 main 函数中调用)
 func (a *App) Run() {
-	// cmd.Execute() 调用命令的执行入口
 	if err := a.cmd.Execute(); err != nil {
 		fmt.Printf("%v %v\n", color.RedString("Error:"), err)
 		os.Exit(1)
@@ -217,9 +220,12 @@ func (a *App) Command() *cobra.Command {
 	return a.cmd
 }
 
+// runCommand 自定义 cobra 启动应用的逻辑
 func (a *App) runCommand(cmd *cobra.Command, args []string) error {
-	printWorkingDir()
-	cliflag.PrintFlags(cmd.Flags())
+	printWorkingDir()               // 打印工作目录
+	cliflag.PrintFlags(cmd.Flags()) // 打印添加的标志
+
+	// 设置是否打印版本信息和应用配置信息
 	if !a.noVersion {
 		// display application version information
 		verflag.PrintAndExitIfRequested()
@@ -248,14 +254,14 @@ func (a *App) runCommand(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	// 检验应用配置 CliOptions
 	if a.options != nil {
 		if err := a.applyOptionRules(); err != nil {
 			return err
 		}
 	}
 
-	// run application
-	// 启动应用（internal/apiserver/app.go run()）
+	// 启动应用！（internal/apiserver/app.go run()）
 	if a.runFunc != nil {
 		return a.runFunc(a.basename)
 	}
@@ -264,19 +270,21 @@ func (a *App) runCommand(cmd *cobra.Command, args []string) error {
 }
 
 func (a *App) applyOptionRules() error {
-	//if completeableOptions, ok := a.options.(CompleteableOptions); ok {
-	//	if err := completeableOptions.Complete(); err != nil {
-	//		return err
-	//	}
-	//}
-	//
-	//if errs := a.options.Validate(); len(errs) != 0 {
-	//	return errors.NewAggregate(errs)
-	//}
-	//
-	//if printableOptions, ok := a.options.(PrintableOptions); ok && !a.silence {
-	//	log.Infof("%v Config: `%s`", progressMessage, printableOptions.String())
-	//}
+	// 判断配置是否完成
+	if completeableOptions, ok := a.options.(CompleteableOptions); ok {
+		if err := completeableOptions.Complete(); err != nil {
+			return err
+		}
+	}
+
+	// 验证配置是否有效
+	if errs := a.options.Validate(); len(errs) != 0 {
+		return errors.NewAggregate(errs)
+	}
+
+	if printableOptions, ok := a.options.(PrintableOptions); ok && !a.silence {
+		log.Infof("%v Config: `%s`", progressMessage, printableOptions.String())
+	}
 
 	return nil
 }
