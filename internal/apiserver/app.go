@@ -1,7 +1,7 @@
 package apiserver
 
 import (
-	"honnef.co/go/tools/config"
+	"j-iam/internal/apiserver/config"
 	"j-iam/internal/apiserver/options"
 	"j-iam/internal/pkg/app"
 )
@@ -33,22 +33,18 @@ func run(opts *options.Options) app.RunFunc {
 	return func(basename string) error {
 		//log.Init(opts.Log)
 		//defer log.Flush()
-		//
-		//cfg, err := config.CreateConfigFromOptions(opts)
-		//if err != nil {
-		//	return err
-		//}
-		//
-		return nil
+
+		// 根据应用配置，构建 apiserver 配置
+		cfg := config.CreateConfigFromOptions(opts)
+		return Run(cfg)
 	}
 }
 
 func Run(cfg *config.Config) error {
-	//server, err := createAPIServer(cfg)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//return server.PrepareRun().Run()
-	return nil
+	server, err := createAPIServer(cfg)
+	if err != nil {
+		return err
+	}
+
+	return server.PrepareRun().Run()
 }

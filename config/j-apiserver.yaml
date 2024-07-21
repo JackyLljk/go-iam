@@ -2,7 +2,7 @@
 
 # RESTful 服务配置(gin)
 server:
-  mode: debug # gin server mode: release, debug, test，默认 release
+  mode: debug # gin service mode: release, debug, test，默认 release
   health: true # 是否开启健康检查，如果开启会安装 /health 路由，默认 true
   middleware: recovery,logger,secure,nocache,cors,dump # 加载的 gin 中间件列表
   max-ping-count: 3 # http 服务启动后，自检尝试次数，默认 3
