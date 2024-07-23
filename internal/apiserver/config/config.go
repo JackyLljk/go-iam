@@ -11,5 +11,6 @@ type Config struct {
 
 // CreateConfigFromOptions 根据给定的 pump 命令行或配置文件选项创建正在运行的配置实例
 func CreateConfigFromOptions(opts *options.Options) *Config {
+
 	return &Config{opts}
 }

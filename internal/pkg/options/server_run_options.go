@@ -1,8 +1,9 @@
 package options
 
 import (
-	"github.com/spf13/pflag"
 	"j-iam/internal/pkg/server"
+
+	"github.com/spf13/pflag"
 )
 
 // 定义运行通用应用（generic api service）的配置
@@ -11,7 +12,7 @@ type ServerRunOptions struct {
 	// 运行模式(gin）
 	Mode string `json:"mode"        mapstructure:"mode"`
 	// 健康检查
-	Health bool `json:"healthz"     mapstructure:"healthz"`
+	Health bool `json:"health"     mapstructure:"health"`
 	// 中间件使用
 	Middlewares []string `json:"middlewares" mapstructure:"middlewares"`
 }

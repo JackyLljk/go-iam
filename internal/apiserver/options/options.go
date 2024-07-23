@@ -21,11 +21,11 @@ type Options struct {
 
 func NewOptions() *Options {
 	o := Options{
-		//GenericServerRunOptions: genericoptions.NewServerRunOptions(),
+		GenericServerRunOptions: genericoptions.NewServerRunOptions(),
 		//GRPCOptions:             genericoptions.NewGRPCOptions(),
-		//InsecureServing:         genericoptions.NewInsecureServingOptions(),
+		InsecureServing: genericoptions.NewInsecureServingOptions(),
 		//SecureServing:           genericoptions.NewSecureServingOptions(),
-		//MySQLOptions:            genericoptions.NewMySQLOptions(),
+		MySQLOptions: genericoptions.NewMySQLOptions(),
 		//RedisOptions:            genericoptions.NewRedisOptions(),
 		//JwtOptions:              genericoptions.NewJwtOptions(),
 		//Log:                     log.NewOptions(),
@@ -52,11 +52,11 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 func (o *Options) Validate() []error {
 	var errs []error
 
-	//errs = append(errs, o.GenericServerRunOptions.Validate()...)
+	errs = append(errs, o.GenericServerRunOptions.Validate()...)
 	//errs = append(errs, o.GRPCOptions.Validate()...)
-	//errs = append(errs, o.InsecureServing.Validate()...)
+	errs = append(errs, o.InsecureServing.Validate()...)
 	//errs = append(errs, o.SecureServing.Validate()...)
-	//errs = append(errs, o.MySQLOptions.Validate()...)
+	errs = append(errs, o.MySQLOptions.Validate()...)
 	//errs = append(errs, o.RedisOptions.Validate()...)
 	//errs = append(errs, o.JwtOptions.Validate()...)
 	//errs = append(errs, o.Log.Validate()...)
