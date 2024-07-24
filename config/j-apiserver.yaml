@@ -30,10 +30,10 @@ secure:
 
 # MySQL 数据库相关配置
 mysql:
-  host: 127.0.0.1:3306 # MySQL 机器 ip 和端口，默认 127.0.0.1:3306
+  host: 127.0.0.1:13306 # MySQL 机器 ip 和端口，默认 127.0.0.1:3306
   username: root # MySQL 用户名(建议授权最小权限集)
-  password: root1234 # MySQL 用户密码
-  database: jdb # iam 系统所用的数据库名
+  password: iam123 # MySQL 用户密码
+  database: iam # iam 系统所用的数据库名
 #  host: ${MARIADB_HOST} # MySQL 机器 ip 和端口，默认 127.0.0.1:3306
 #  username: ${MARIADB_USERNAME} # MySQL 用户名(建议授权最小权限集)
 #  password: ${MARIADB_PASSWORD} # MySQL 用户密码

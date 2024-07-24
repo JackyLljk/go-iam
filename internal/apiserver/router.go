@@ -1,12 +1,17 @@
 package apiserver
 
 import (
-	"github.com/gin-gonic/gin"
 	"j-iam/internal/apiserver/controller/v1/policy"
 	"j-iam/internal/apiserver/controller/v1/secret"
 	"j-iam/internal/apiserver/controller/v1/user"
 	"j-iam/internal/apiserver/store/mysql"
+	"j-iam/internal/pkg/code"
 	"j-iam/internal/pkg/middleware"
+	"j-iam/internal/pkg/middleware/auth"
+
+	"github.com/gin-gonic/gin"
+	"github.com/marmotedu/component-base/pkg/core"
+	"github.com/marmotedu/errors"
 )
 
 func initRouter(g *gin.Engine) {
@@ -22,18 +27,19 @@ func installController(g *gin.Engine) *gin.Engine {
 	// Middlewares.
 
 	// Auth Middleware 认证中间件
-	//jwtStrategy, _ := newJWTAuth().(auth.JWTStrategy)
+	jwtStrategy, _ := newJWTAuth().(auth.JWTStrategy)
 
 	// 登录 /login 需要 Basic 认证和 Bearer 认证
-	//g.POST("/login", jwtStrategy.LoginHandler)
-	//g.POST("/logout", jwtStrategy.LogoutHandler)
-	// Refresh time can be longer than token timeout
-	//g.POST("/refresh", jwtStrategy.RefreshHandler)
+	g.POST("/login", jwtStrategy.LoginHandler)
+	g.POST("/logout", jwtStrategy.LogoutHandler)
 
-	//auto := newAutoAuth()
-	//g.NoRoute(auto.AuthFunc(), func(c *gin.Context) {
-	//	core.WriteResponse(c, errors.WithCode(code.ErrPageNotFound, "Page not found."), nil)
-	//})
+	// 令牌刷新，刷新令牌的有效时间要长于认证
+	g.POST("/refresh", jwtStrategy.RefreshHandler)
+
+	auto := newAutoAuth()
+	g.NoRoute(auto.AuthFunc(), func(c *gin.Context) {
+		core.WriteResponse(c, errors.WithCode(code.ErrPageNotFound, "Page not found."), nil)
+	})
 
 	// v1 handlers, requiring authentication
 	storeIns, _ := mysql.GetMySQLFactory(nil)
@@ -45,8 +51,8 @@ func installController(g *gin.Engine) *gin.Engine {
 			userController := user.NewUserController(storeIns)
 
 			userv1.POST("", userController.Create)
-			//userv1.Use(auto.AuthFunc(), middleware.Validation())
-			// v1.PUT("/find_password", userController.FindPassword)
+			userv1.Use(auto.AuthFunc(), middleware.Validation())
+			//v1.PUT("/find_password", userController.FindPassword)
 			userv1.DELETE("", userController.DeleteCollection) // admin api
 			userv1.DELETE(":name", userController.Delete)      // admin api
 			userv1.PUT(":name/change-password", userController.ChangePassword)
@@ -55,7 +61,7 @@ func installController(g *gin.Engine) *gin.Engine {
 			userv1.GET(":name", userController.Get) // admin api
 		}
 
-		//v1.Use(auto.AuthFunc())
+		v1.Use(auto.AuthFunc())
 
 		// policy RESTful resource
 		policyv1 := v1.Group("/policies", middleware.Publish())

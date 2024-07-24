@@ -1,7 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 package middleware
 
 import (
@@ -13,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mattn/go-isatty"
 
-	"github.com/marmotedu/iam/pkg/log"
+	"j-iam/pkg/log"
 )
 
 // defaultLogFormatter is the default log format function Logger middleware uses.

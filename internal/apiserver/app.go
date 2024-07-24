@@ -4,6 +4,7 @@ import (
 	"j-iam/internal/apiserver/config"
 	"j-iam/internal/apiserver/options"
 	"j-iam/internal/pkg/app"
+	"j-iam/pkg/log"
 )
 
 const commandDesc = `j-apiserver 验证和配置 API 对象的数据，
@@ -31,8 +32,8 @@ func NewApp(basename string) *app.App {
 // run 注册在 App.runFunc 的应用启动回调函数
 func run(opts *options.Options) app.RunFunc {
 	return func(basename string) error {
-		//log.Init(opts.Log)
-		//defer log.Flush()
+		log.Init(opts.Log)
+		defer log.Flush()
 
 		// 根据应用配置，构建 apiserver 配置
 		cfg := config.CreateConfigFromOptions(opts)

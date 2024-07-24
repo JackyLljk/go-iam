@@ -1,8 +1,9 @@
 package options
 
 import (
-	"github.com/spf13/pflag"
 	"time"
+
+	"github.com/spf13/pflag"
 )
 
 type MySQLOptions struct {
@@ -19,10 +20,15 @@ type MySQLOptions struct {
 // NewMySQLOptions 创建一个 'zero' value 实例
 func NewMySQLOptions() *MySQLOptions {
 	return &MySQLOptions{
-		Host:                  "127.0.0.1:3306",
-		Username:              "",
-		Password:              "",
-		Database:              "",
+		// 临时修改一下
+		Host:     "127.0.0.1:13306",
+		Username: "root",
+		Password: "iam123",
+		Database: "iam",
+		//Host:                  "127.0.0.1:3306",
+		//Username:              "",
+		//Password:              "",
+		//Database:              "",
 		MaxIdleConnections:    100,
 		MaxOpenConnections:    100,
 		MaxConnectionLifeTime: time.Duration(10) * time.Second,
