@@ -1,15 +1,11 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 package authzserver
 
 import (
 	"github.com/marmotedu/errors"
 
-	"github.com/marmotedu/iam/internal/authzserver/load/cache"
-	"github.com/marmotedu/iam/internal/pkg/middleware"
-	"github.com/marmotedu/iam/internal/pkg/middleware/auth"
+	"j-iam/internal/authzserver/load/cache"
+	"j-iam/internal/pkg/middleware"
+	"j-iam/internal/pkg/middleware/auth"
 )
 
 // 创建 cache 认证策略

@@ -1,27 +1,20 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
-// Package authzserver does all of the work necessary to create a authzserver
 package authzserver
 
+// 创建 authzserver 应用
+
 import (
-	"github.com/marmotedu/iam/internal/authzserver/config"
-	"github.com/marmotedu/iam/internal/authzserver/options"
-	"github.com/marmotedu/iam/pkg/app"
-	"github.com/marmotedu/iam/pkg/log"
+	"j-iam/internal/authzserver/config"
+	"j-iam/internal/authzserver/options"
+	"j-iam/internal/pkg/app"
+	"j-iam/pkg/log"
 )
 
-const commandDesc = `Authorization server to run ladon policies which can protecting your resources.
-It is written inspired by AWS IAM policiis.
-
-Find more iam-authz-server information at:
-    https://github.com/marmotedu/iam/blob/master/docs/guide/en-US/cmd/iam-authz-server.md,
+const commandDesc = `Authorization(Authz) 服务使用 ladon 作为访问策略库，可以基于此进行资源保护
 
 Find more ladon information at:
     https://github.com/ory/ladon`
 
-// NewApp creates an App object with default parameters.
+// NewApp 基于默认参数构建 App
 func NewApp(basename string) *app.App {
 	opts := options.NewOptions()
 	application := app.NewApp("IAM Authorization Server",
@@ -29,6 +22,8 @@ func NewApp(basename string) *app.App {
 		app.WithOptions(opts),
 		app.WithDescription(commandDesc),
 		app.WithDefaultValidArgs(),
+		app.WithNoVersion(),
+		app.WithNoConfig(),
 		app.WithRunFunc(run(opts)),
 	)
 
@@ -47,4 +42,14 @@ func run(opts *options.Options) app.RunFunc {
 
 		return Run(cfg)
 	}
+}
+
+// Run runs the specified AuthzServer. This should never exit.
+func Run(cfg *config.Config) error {
+	server, err := createAuthzServer(cfg)
+	if err != nil {
+		return err
+	}
+
+	return server.PrepareRun().Run()
 }

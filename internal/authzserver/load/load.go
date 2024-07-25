@@ -1,7 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 package load
 
 import (
@@ -10,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/marmotedu/iam/pkg/log"
-	"github.com/marmotedu/iam/pkg/storage"
+	"j-iam/pkg/log"
+	"j-iam/pkg/storage"
 )
 
 // Loader defines function to reload storage.

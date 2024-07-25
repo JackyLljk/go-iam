@@ -1,7 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 // Package authorize implements the authorize handlers.
 package authorize
 
@@ -11,9 +7,9 @@ import (
 	"github.com/marmotedu/errors"
 	"github.com/ory/ladon"
 
-	"github.com/marmotedu/iam/internal/authzserver/authorization"
-	"github.com/marmotedu/iam/internal/authzserver/authorization/authorizer"
-	"github.com/marmotedu/iam/internal/pkg/code"
+	"j-iam/internal/authzserver/authorization"
+	"j-iam/internal/authzserver/authorization/authorizer"
+	"j-iam/internal/pkg/code"
 )
 
 // AuthzController create a authorize handler used to handle authorize request.
@@ -44,7 +40,7 @@ func (a *AuthzController) Authorize(c *gin.Context) {
 	}
 
 	r.Context["username"] = c.GetString("username")
-	rsp := auth.Authorize(&r)
+	rsp := auth.Authorize(c, &r)
 
 	core.WriteResponse(c, nil, rsp)
 }

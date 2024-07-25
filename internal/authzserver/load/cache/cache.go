@@ -1,7 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 package cache
 
 import (
@@ -12,7 +8,7 @@ import (
 	"github.com/marmotedu/errors"
 	"github.com/ory/ladon"
 
-	"github.com/marmotedu/iam/internal/authzserver/store"
+	"j-iam/internal/authzserver/store"
 )
 
 // Cache is used to store secrets and policies.

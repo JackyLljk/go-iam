@@ -1,0 +1,21 @@
+{
+  "CN": "j-authzserver",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "JiangSu",
+      "L": "NanJing",
+      "O": "JKey",
+      "OU": "j-authzserver"
+    }
+  ],
+  "hosts": [
+    "127.0.0.1",
+    "localhost",
+    "iam.authz.marmotedu.com"
+  ]
+}

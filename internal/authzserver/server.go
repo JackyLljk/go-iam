@@ -1,25 +1,22 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 package authzserver
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/marmotedu/errors"
 
-	"github.com/marmotedu/iam/internal/authzserver/analytics"
-	"github.com/marmotedu/iam/internal/authzserver/config"
-	"github.com/marmotedu/iam/internal/authzserver/load"
-	"github.com/marmotedu/iam/internal/authzserver/load/cache"
-	"github.com/marmotedu/iam/internal/authzserver/store/apiserver"
-	genericoptions "github.com/marmotedu/iam/internal/pkg/options"
-	genericapiserver "github.com/marmotedu/iam/internal/pkg/server"
-	"github.com/marmotedu/iam/pkg/log"
-	"github.com/marmotedu/iam/pkg/shutdown"
-	"github.com/marmotedu/iam/pkg/shutdown/shutdownmanagers/posixsignal"
-	"github.com/marmotedu/iam/pkg/storage"
+	"j-iam/internal/authzserver/analytics"
+	"j-iam/internal/authzserver/config"
+	"j-iam/internal/authzserver/load"
+	"j-iam/internal/authzserver/load/cache"
+	"j-iam/internal/authzserver/store/apiserver"
+	genericoptions "j-iam/internal/pkg/options"
+	genericapiserver "j-iam/internal/pkg/server"
+	"j-iam/pkg/log"
+	"j-iam/pkg/shutdown"
+	"j-iam/pkg/shutdown/shutdownmanagers/posixsignal"
+	"j-iam/pkg/storage"
 )
 
 // RedisKeyPrefix defines the prefix key in redis for analytics data.
@@ -96,23 +93,23 @@ func (s preparedAuthzServer) Run() error {
 	return s.genericAPIServer.Run()
 }
 
-func buildGenericConfig(cfg *config.Config) (genericConfig *genericapiserver.Config, lastErr error) {
+func buildGenericConfig(cfg *config.Config) (genericConfig *genericapiserver.Config, err error) {
 	genericConfig = genericapiserver.NewConfig()
-	if lastErr = cfg.GenericServerRunOptions.ApplyTo(genericConfig); lastErr != nil {
+	if err = cfg.GenericServerRunOptions.ApplyTo(genericConfig); err != nil {
 		return
 	}
 
-	if lastErr = cfg.FeatureOptions.ApplyTo(genericConfig); lastErr != nil {
+	if err = cfg.InsecureServing.ApplyTo(genericConfig); err != nil {
 		return
 	}
 
-	if lastErr = cfg.SecureServing.ApplyTo(genericConfig); lastErr != nil {
-		return
-	}
-
-	if lastErr = cfg.InsecureServing.ApplyTo(genericConfig); lastErr != nil {
-		return
-	}
+	//if err = cfg.FeatureOptions.ApplyTo(genericConfig); err != nil {
+	//	return
+	//}
+	//
+	//if err = cfg.SecureServing.ApplyTo(genericConfig); err != nil {
+	//	return
+	//}
 
 	return
 }
@@ -143,6 +140,7 @@ func (s *authzServer) initialize() error {
 	go storage.ConnectToRedis(ctx, s.buildStorageConfig())
 
 	// cron to reload all secrets and policies from iam-apiserver
+	fmt.Println("ca: ", s.clientCA)
 	cacheIns, err := cache.GetCacheInsOr(apiserver.GetAPIServerFactoryOrDie(s.rpcServer, s.clientCA))
 	if err != nil {
 		return errors.Wrap(err, "get cache instance failed")

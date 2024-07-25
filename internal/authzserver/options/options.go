@@ -1,7 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 // Package options contains flags and options for initializing an apiserver
 package options
 
@@ -9,23 +5,23 @@ import (
 	cliflag "github.com/marmotedu/component-base/pkg/cli/flag"
 	"github.com/marmotedu/component-base/pkg/json"
 
-	"github.com/marmotedu/iam/internal/authzserver/analytics"
-	genericoptions "github.com/marmotedu/iam/internal/pkg/options"
-	"github.com/marmotedu/iam/internal/pkg/server"
-	"github.com/marmotedu/iam/pkg/log"
+	"j-iam/internal/authzserver/analytics"
+	genericoptions "j-iam/internal/pkg/options"
+	"j-iam/internal/pkg/server"
+	"j-iam/pkg/log"
 )
 
-// Options runs a authzserver.
+// Options authzserver Options 配置
 type Options struct {
 	RPCServer               string                                 `json:"rpcserver"      mapstructure:"rpcserver"`
 	ClientCA                string                                 `json:"client-ca-file" mapstructure:"client-ca-file"`
 	GenericServerRunOptions *genericoptions.ServerRunOptions       `json:"server"         mapstructure:"server"`
 	InsecureServing         *genericoptions.InsecureServingOptions `json:"insecure"       mapstructure:"insecure"`
-	SecureServing           *genericoptions.SecureServingOptions   `json:"secure"         mapstructure:"secure"`
 	RedisOptions            *genericoptions.RedisOptions           `json:"redis"          mapstructure:"redis"`
-	FeatureOptions          *genericoptions.FeatureOptions         `json:"feature"        mapstructure:"feature"`
 	Log                     *log.Options                           `json:"log"            mapstructure:"log"`
 	AnalyticsOptions        *analytics.AnalyticsOptions            `json:"analytics"      mapstructure:"analytics"`
+	//SecureServing           *genericoptions.SecureServingOptions   `json:"secure"         mapstructure:"secure"`
+	//FeatureOptions   *genericoptions.FeatureOptions `json:"feature"        mapstructure:"feature"`
 }
 
 // NewOptions creates a new Options object with default parameters.
@@ -35,11 +31,11 @@ func NewOptions() *Options {
 		ClientCA:                "",
 		GenericServerRunOptions: genericoptions.NewServerRunOptions(),
 		InsecureServing:         genericoptions.NewInsecureServingOptions(),
-		SecureServing:           genericoptions.NewSecureServingOptions(),
 		RedisOptions:            genericoptions.NewRedisOptions(),
-		FeatureOptions:          genericoptions.NewFeatureOptions(),
 		Log:                     log.NewOptions(),
 		AnalyticsOptions:        analytics.NewAnalyticsOptions(),
+		//SecureServing:           genericoptions.NewSecureServingOptions(),
+		//FeatureOptions:          genericoptions.NewFeatureOptions(),
 	}
 
 	return &o
@@ -55,10 +51,10 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	o.GenericServerRunOptions.AddFlags(fss.FlagSet("generic"))
 	o.AnalyticsOptions.AddFlags(fss.FlagSet("analytics"))
 	o.RedisOptions.AddFlags(fss.FlagSet("redis"))
-	o.FeatureOptions.AddFlags(fss.FlagSet("features"))
 	o.InsecureServing.AddFlags(fss.FlagSet("insecure serving"))
-	o.SecureServing.AddFlags(fss.FlagSet("secure serving"))
 	o.Log.AddFlags(fss.FlagSet("logs"))
+	//o.FeatureOptions.AddFlags(fss.FlagSet("features"))
+	//o.SecureServing.AddFlags(fss.FlagSet("secure serving"))
 
 	// Note: the weird ""+ in below lines seems to be the only way to get gofmt to
 	// arrange these text blocks sensibly. Grrr.
@@ -81,5 +77,21 @@ func (o *Options) String() string {
 
 // Complete set default Options.
 func (o *Options) Complete() error {
-	return o.SecureServing.Complete()
+	//return o.SecureServing.Complete()
+	return nil
+}
+
+// Validate checks Options and return a slice of found errs.
+func (o *Options) Validate() []error {
+	var errs []error
+
+	errs = append(errs, o.GenericServerRunOptions.Validate()...)
+	errs = append(errs, o.InsecureServing.Validate()...)
+	errs = append(errs, o.RedisOptions.Validate()...)
+	errs = append(errs, o.Log.Validate()...)
+	errs = append(errs, o.AnalyticsOptions.Validate()...)
+	//errs = append(errs, o.SecureServing.Validate()...)
+	//errs = append(errs, o.FeatureOptions.Validate()...)
+
+	return errs
 }

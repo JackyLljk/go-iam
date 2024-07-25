@@ -1,7 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
 package authzserver
 
 import (
@@ -9,10 +5,10 @@ import (
 	"github.com/marmotedu/component-base/pkg/core"
 	"github.com/marmotedu/errors"
 
-	"github.com/marmotedu/iam/internal/authzserver/controller/v1/authorize"
-	"github.com/marmotedu/iam/internal/authzserver/load/cache"
-	"github.com/marmotedu/iam/internal/pkg/code"
-	"github.com/marmotedu/iam/pkg/log"
+	"j-iam/internal/authzserver/controller/v1/authorize"
+	"j-iam/internal/authzserver/load/cache"
+	"j-iam/internal/pkg/code"
+	"j-iam/pkg/log"
 )
 
 func initRouter(g *gin.Engine) {

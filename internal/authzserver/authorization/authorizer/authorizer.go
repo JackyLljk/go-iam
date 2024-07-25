@@ -1,8 +1,3 @@
-// Copyright 2020 Lingfei Kong <colin404@foxmail.com>. All rights reserved.
-// Use of this source code is governed by a MIT style
-// license that can be found in the LICENSE file.
-
-// Package authorizer defines authorization interface.
 package authorizer
 
 import (
@@ -13,8 +8,8 @@ import (
 	"github.com/marmotedu/component-base/pkg/json"
 	"github.com/ory/ladon"
 
-	"github.com/marmotedu/iam/internal/authzserver/analytics"
-	"github.com/marmotedu/iam/internal/authzserver/authorization"
+	"j-iam/internal/authzserver/analytics"
+	"j-iam/internal/authzserver/authorization"
 )
 
 // PolicyGetter defines function to get policy for a given user.
