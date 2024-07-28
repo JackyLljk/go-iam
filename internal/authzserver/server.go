@@ -103,13 +103,14 @@ func buildGenericConfig(cfg *config.Config) (genericConfig *genericapiserver.Con
 		return
 	}
 
+	if err = cfg.SecureServing.ApplyTo(genericConfig); err != nil {
+		return
+	}
+
 	//if err = cfg.FeatureOptions.ApplyTo(genericConfig); err != nil {
 	//	return
 	//}
 	//
-	//if err = cfg.SecureServing.ApplyTo(genericConfig); err != nil {
-	//	return
-	//}
 
 	return
 }
@@ -139,8 +140,8 @@ func (s *authzServer) initialize() error {
 	// keep redis connected
 	go storage.ConnectToRedis(ctx, s.buildStorageConfig())
 
-	// cron to reload all secrets and policies from iam-apiserver
-	fmt.Println("ca: ", s.clientCA)
+	// cron 从 iam-apiserver 重新加载所有密钥和策略
+	fmt.Println("ca: ", s.clientCA) // 卡这里了
 	cacheIns, err := cache.GetCacheInsOr(apiserver.GetAPIServerFactoryOrDie(s.rpcServer, s.clientCA))
 	if err != nil {
 		return errors.Wrap(err, "get cache instance failed")

@@ -3,8 +3,9 @@ package cache
 import (
 	"sync"
 
+	pb "j-iam/internal/pkg/proto/apiserver/v1"
+
 	"github.com/dgraph-io/ristretto"
-	pb "github.com/marmotedu/api/proto/apiserver/v1"
 	"github.com/marmotedu/errors"
 	"github.com/ory/ladon"
 

@@ -18,7 +18,7 @@ type GRPCOptions struct {
 // No one should be using these anymore.
 func NewGRPCOptions() *GRPCOptions {
 	return &GRPCOptions{
-		BindAddress: "0.0.0.0",
+		BindAddress: "127.0.0.1",
 		BindPort:    8081,
 		MaxMsgSize:  4 * 1024 * 1024,
 	}

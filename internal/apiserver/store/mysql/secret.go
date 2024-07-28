@@ -3,7 +3,8 @@ package mysql
 import (
 	"context"
 
-	v1 "github.com/marmotedu/api/apiserver/v1"
+	v1 "j-iam/internal/pkg/model/apiserver/v1"
+
 	"github.com/marmotedu/component-base/pkg/fields"
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/errors"

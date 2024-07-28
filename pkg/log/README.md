@@ -25,7 +25,7 @@
 package main
 
 import (
-    "github.com/marmotedu/iam/pkg/log"
+    "j-iam/pkg/log"
 )
 
 func main() {

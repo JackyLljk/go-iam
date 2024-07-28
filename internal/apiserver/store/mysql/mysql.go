@@ -2,13 +2,14 @@ package mysql
 
 import (
 	"fmt"
-	"j-iam/internal/apiserver/store"
-	"j-iam/internal/pkg/logger"
-	genericoptions "j-iam/internal/pkg/options"
-	"j-iam/pkg/db"
 	"sync"
 
-	v1 "github.com/marmotedu/api/apiserver/v1"
+	"j-iam/internal/apiserver/store"
+	"j-iam/internal/pkg/logger"
+	v1 "j-iam/internal/pkg/model/apiserver/v1"
+	genericoptions "j-iam/internal/pkg/options"
+	"j-iam/pkg/db"
+
 	"github.com/marmotedu/errors"
 	"gorm.io/gorm"
 )

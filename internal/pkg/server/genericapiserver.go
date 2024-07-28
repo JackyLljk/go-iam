@@ -28,7 +28,7 @@ import (
 type GenericAPIServer struct {
 	middlewares []string
 	// SecureServingInfo holds configuration of the TLS server. HTTPS 服务配置
-	//SecureServingInfo *SecureServingInfo
+	SecureServingInfo *SecureServingInfo
 
 	// InsecureServingInfo holds configuration of the insecure HTTP server. HTTP 服务配置
 	InsecureServingInfo *InsecureServingInfo

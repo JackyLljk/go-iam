@@ -5,8 +5,8 @@ import (
 	"github.com/marmotedu/component-base/pkg/core"
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 
-	"github.com/marmotedu/iam/pkg/log"
 	"j-iam/internal/pkg/middleware"
+	"j-iam/pkg/log"
 )
 
 // Delete deletes the policy by the policy identifier.

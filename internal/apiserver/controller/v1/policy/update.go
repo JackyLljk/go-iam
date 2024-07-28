@@ -1,15 +1,16 @@
 package policy
 
 import (
+	v1 "j-iam/internal/pkg/model/apiserver/v1"
+
 	"github.com/gin-gonic/gin"
-	v1 "github.com/marmotedu/api/apiserver/v1"
 	"github.com/marmotedu/component-base/pkg/core"
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/errors"
 
-	"github.com/marmotedu/iam/pkg/log"
 	"j-iam/internal/pkg/code"
 	"j-iam/internal/pkg/middleware"
+	"j-iam/pkg/log"
 )
 
 // Update updates policy by the policy identifier.

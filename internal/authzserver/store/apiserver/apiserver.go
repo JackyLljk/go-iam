@@ -1,9 +1,9 @@
 package apiserver
 
 import (
+	pb "j-iam/internal/pkg/proto/apiserver/v1"
 	"sync"
 
-	pb "github.com/marmotedu/api/proto/apiserver/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -28,7 +28,7 @@ var (
 	once             sync.Once
 )
 
-// GetAPIServerFactoryOrDie return cache instance and panics on any error.
+// GetAPIServerFactoryOrDie 获得缓存实例
 func GetAPIServerFactoryOrDie(address string, clientCA string) store.Factory {
 	once.Do(func() {
 		var (
@@ -42,7 +42,7 @@ func GetAPIServerFactoryOrDie(address string, clientCA string) store.Factory {
 			log.Panicf("credentials.NewClientTLSFromFile err: %v", err)
 		}
 
-		conn, err = grpc.Dial(address, grpc.WithBlock(), grpc.WithTransportCredentials(creds))
+		conn, err = grpc.Dial(address, grpc.WithTransportCredentials(creds))
 		if err != nil {
 			log.Panicf("Connect to grpc server failed, error: %s", err.Error())
 		}

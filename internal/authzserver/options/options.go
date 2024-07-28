@@ -11,6 +11,8 @@ import (
 	"j-iam/pkg/log"
 )
 
+const clientCa = "cert/server.pem"
+
 // Options authzserver Options 配置
 type Options struct {
 	RPCServer               string                                 `json:"rpcserver"      mapstructure:"rpcserver"`
@@ -20,23 +22,26 @@ type Options struct {
 	RedisOptions            *genericoptions.RedisOptions           `json:"redis"          mapstructure:"redis"`
 	Log                     *log.Options                           `json:"log"            mapstructure:"log"`
 	AnalyticsOptions        *analytics.AnalyticsOptions            `json:"analytics"      mapstructure:"analytics"`
-	//SecureServing           *genericoptions.SecureServingOptions   `json:"secure"         mapstructure:"secure"`
+	SecureServing           *genericoptions.SecureServingOptions   `json:"secure"         mapstructure:"secure"`
 	//FeatureOptions   *genericoptions.FeatureOptions `json:"feature"        mapstructure:"feature"`
 }
 
 // NewOptions creates a new Options object with default parameters.
 func NewOptions() *Options {
 	o := Options{
-		RPCServer:               "127.0.0.1:8081",
-		ClientCA:                "",
+		RPCServer: "127.0.0.1:8081",
+		//ClientCA:                "",
+		ClientCA:                clientCa, // 设置为临时值
 		GenericServerRunOptions: genericoptions.NewServerRunOptions(),
 		InsecureServing:         genericoptions.NewInsecureServingOptions(),
 		RedisOptions:            genericoptions.NewRedisOptions(),
 		Log:                     log.NewOptions(),
 		AnalyticsOptions:        analytics.NewAnalyticsOptions(),
-		//SecureServing:           genericoptions.NewSecureServingOptions(),
+		SecureServing:           genericoptions.NewSecureServingOptions(),
 		//FeatureOptions:          genericoptions.NewFeatureOptions(),
 	}
+
+	o.InsecureServing.BindPort = 8082
 
 	return &o
 }
@@ -53,8 +58,8 @@ func (o *Options) Flags() (fss cliflag.NamedFlagSets) {
 	o.RedisOptions.AddFlags(fss.FlagSet("redis"))
 	o.InsecureServing.AddFlags(fss.FlagSet("insecure serving"))
 	o.Log.AddFlags(fss.FlagSet("logs"))
+	o.SecureServing.AddFlags(fss.FlagSet("secure serving"))
 	//o.FeatureOptions.AddFlags(fss.FlagSet("features"))
-	//o.SecureServing.AddFlags(fss.FlagSet("secure serving"))
 
 	// Note: the weird ""+ in below lines seems to be the only way to get gofmt to
 	// arrange these text blocks sensibly. Grrr.
@@ -90,7 +95,7 @@ func (o *Options) Validate() []error {
 	errs = append(errs, o.RedisOptions.Validate()...)
 	errs = append(errs, o.Log.Validate()...)
 	errs = append(errs, o.AnalyticsOptions.Validate()...)
-	//errs = append(errs, o.SecureServing.Validate()...)
+	errs = append(errs, o.SecureServing.Validate()...)
 	//errs = append(errs, o.FeatureOptions.Validate()...)
 
 	return errs

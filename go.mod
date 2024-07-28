@@ -19,7 +19,7 @@ require (
 	github.com/go-redis/redis/v7 v7.4.1
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/likexian/host-stat-go v0.0.0-20190516151207-c9cf36dd6ce9
-	github.com/marmotedu/api v1.6.3
+	//github.com/marmotedu/api v1.6.3
 	github.com/marmotedu/component-base v1.6.2
 	github.com/marmotedu/errors v1.0.2
 	github.com/marmotedu/iam v1.7.0
@@ -47,11 +47,14 @@ require (
 	golang.org/x/text v0.15.0
 	golang.org/x/time v0.5.0
 	google.golang.org/grpc v1.62.1
+	google.golang.org/protobuf v1.34.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.7
 	k8s.io/klog v1.0.0
 )
+
+require github.com/marmotedu/api v1.6.3
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
@@ -123,7 +126,6 @@ require (
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240314234333-6e1732d8331c // indirect
-	google.golang.org/protobuf v1.34.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	moul.io/http2curl v1.0.0 // indirect

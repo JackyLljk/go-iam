@@ -2,17 +2,17 @@ package apiserver
 
 import (
 	"context"
+	"j-iam/internal/pkg/proto/apiserver/v1"
 
 	"github.com/AlekSi/pointer"
 	"github.com/avast/retry-go"
-	pb "github.com/marmotedu/api/proto/apiserver/v1"
 	"github.com/marmotedu/errors"
 
 	"j-iam/pkg/log"
 )
 
 type secrets struct {
-	cli pb.CacheClient
+	cli v1.CacheClient
 }
 
 func newSecrets(ds *datastore) *secrets {
@@ -20,17 +20,17 @@ func newSecrets(ds *datastore) *secrets {
 }
 
 // List returns all the authorization secrets.
-func (s *secrets) List() (map[string]*pb.SecretInfo, error) {
-	secrets := make(map[string]*pb.SecretInfo)
+func (s *secrets) List() (map[string]*v1.SecretInfo, error) {
+	secrets := make(map[string]*v1.SecretInfo)
 
 	log.Info("Loading secrets")
 
-	req := &pb.ListSecretsRequest{
+	req := &v1.ListSecretsRequest{
 		Offset: pointer.ToInt64(0),
 		Limit:  pointer.ToInt64(-1),
 	}
 
-	var resp *pb.ListSecretsResponse
+	var resp *v1.ListSecretsResponse
 	err := retry.Do(
 		func() error {
 			var listErr error

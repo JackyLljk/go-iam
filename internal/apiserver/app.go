@@ -21,9 +21,9 @@ func NewApp(basename string) *app.App {
 		app.WithOptions(opts),
 		app.WithDescription(commandDesc),
 		app.WithDefaultValidArgs(),
-		//app.WithNoVersion(),	// 不打印应用版本信息
-		//app.WithNoConfig(),	// 不打印应用配置信息
-		//app.WithSilence(),	// 静默模式，不打印版本和配置信息
+		app.WithNoVersion(), // 不打印应用版本信息
+		app.WithNoConfig(),  // 不打印应用配置信息
+		//app.WithSilence(), // 静默模式，不打印版本和配置信息
 		app.WithRunFunc(run(opts)))
 
 	return application

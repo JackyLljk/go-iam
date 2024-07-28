@@ -20,7 +20,9 @@ func initRouter(g *gin.Engine) {
 }
 
 // installMiddleware 注册通用（所有API都用的）中间件到 gin 路由引擎
-func installMiddleware(g *gin.Engine) {}
+func installMiddleware(g *gin.Engine) {
+	gin.SetMode(gin.DebugMode)
+}
 
 // installController 注册 RESTful API 到 gin 路由引擎
 func installController(g *gin.Engine) *gin.Engine {
@@ -51,7 +53,8 @@ func installController(g *gin.Engine) *gin.Engine {
 			userController := user.NewUserController(storeIns)
 
 			userv1.POST("", userController.Create)
-			userv1.Use(auto.AuthFunc(), middleware.Validation())
+			//#############3
+			userv1.Use(auto.AuthFunc(), middleware.Validation()) // 为什么不让访问？？？
 			//v1.PUT("/find_password", userController.FindPassword)
 			userv1.DELETE("", userController.DeleteCollection) // admin api
 			userv1.DELETE(":name", userController.Delete)      // admin api

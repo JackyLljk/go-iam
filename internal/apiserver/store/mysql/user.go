@@ -2,13 +2,14 @@ package mysql
 
 import (
 	"context"
-	v1 "github.com/marmotedu/api/apiserver/v1"
+	"j-iam/internal/pkg/code"
+	v1 "j-iam/internal/pkg/model/apiserver/v1"
+	"j-iam/internal/pkg/util/gormutil"
+
 	"github.com/marmotedu/component-base/pkg/fields"
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/errors"
 	"gorm.io/gorm"
-	"j-iam/internal/pkg/code"
-	"j-iam/internal/pkg/util/gormutil"
 )
 
 type users struct {

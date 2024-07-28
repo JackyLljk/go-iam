@@ -1,15 +1,11 @@
 package server
 
 import (
-	"path/filepath"
-	"strings"
+	"net"
+	"strconv"
 	"time"
 
-	"j-iam/pkg/log"
-
 	"github.com/gin-gonic/gin"
-	"github.com/marmotedu/component-base/pkg/util/homedir"
-	"github.com/spf13/viper"
 )
 
 const (
@@ -25,7 +21,7 @@ const (
 
 // Config GenericAPIServer（通用应用配置）
 type Config struct {
-	//SecureServing   *SecureServingInfo   // TLS 服务配置
+	SecureServing   *SecureServingInfo   // TLS 服务配置
 	InsecureServing *InsecureServingInfo // HTTP 服务配置
 	Jwt             *JwtInfo             // JWT 中间件配置
 	Mode            string               // gin 的运行模式(DebugMode / ReleaseMode / TestMode)
@@ -33,6 +29,26 @@ type Config struct {
 	Health          bool
 	//EnableProfiling bool
 	//EnableMetrics   bool
+}
+
+// CertKey contains configuration items related to certificate.
+type CertKey struct {
+	// CertFile is a file containing a PEM-encoded certificate, and possibly the complete certificate chain
+	CertFile string
+	// KeyFile is a file containing a PEM-encoded private key for the certificate specified by CertFile
+	KeyFile string
+}
+
+// SecureServingInfo holds configuration of the TLS server.
+type SecureServingInfo struct {
+	BindAddress string
+	BindPort    int
+	CertKey     CertKey
+}
+
+// Address join host IP address and host port number into a address string, like: 0.0.0.0:8443.
+func (s *SecureServingInfo) Address() string {
+	return net.JoinHostPort(s.BindAddress, strconv.Itoa(s.BindPort))
 }
 
 func NewConfig() *Config {
@@ -43,7 +59,7 @@ func NewConfig() *Config {
 		//EnableProfiling: true,
 		//EnableMetrics:   true,
 		Jwt: &JwtInfo{
-			Realm: "iam jwt",
+			Realm: "gin jwt",
 			Key:   jwtKey,
 			//Timeout:    1 * time.Hour,
 			//MaxRefresh: 1 * time.Hour,
@@ -85,7 +101,7 @@ func (c CompletedConfig) New() (*GenericAPIServer, error) {
 	gin.SetMode(c.Mode)
 
 	s := &GenericAPIServer{
-		//SecureServingInfo:   c.SecureServing,
+		SecureServingInfo:   c.SecureServing,
 		InsecureServingInfo: c.InsecureServing,
 		health:              c.Health,
 		middlewares:         c.Middlewares,
@@ -100,24 +116,24 @@ func (c CompletedConfig) New() (*GenericAPIServer, error) {
 }
 
 // LoadConfig 从配置文件中读取
-func LoadConfig(cfg string, defaultName string) {
-	if cfg != "" {
-		viper.SetConfigFile(cfg)
-	} else {
-		viper.AddConfigPath(".")
-		viper.AddConfigPath(filepath.Join(homedir.HomeDir(), RecommendedHomeDir))
-		viper.AddConfigPath("/etc/iam")
-		viper.SetConfigName(defaultName)
-	}
-
-	// Use config file from the flag.
-	viper.SetConfigType("yaml")              // set the type of the configuration to yaml.
-	viper.AutomaticEnv()                     // read in environment variables that match.
-	viper.SetEnvPrefix(RecommendedEnvPrefix) // set ENVIRONMENT variables prefix to IAM.
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		log.Warnf("WARNING: viper failed to discover and load the configuration file: %s", err.Error())
-	}
-}
+//func LoadConfig(cfg string, defaultName string) {
+//	if cfg != "" {
+//		viper.SetConfigFile(cfg)
+//	} else {
+//		viper.AddConfigPath(".")
+//		viper.AddConfigPath(filepath.Join(homedir.HomeDir(), RecommendedHomeDir))
+//		viper.AddConfigPath("/etc/iam")
+//		viper.SetConfigName(defaultName)
+//	}
+//
+//	// Use config file from the flag.
+//	viper.SetConfigType("yaml")              // set the type of the configuration to yaml.
+//	viper.AutomaticEnv()                     // read in environment variables that match.
+//	viper.SetEnvPrefix(RecommendedEnvPrefix) // set ENVIRONMENT variables prefix to IAM.
+//	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+//
+//	// If a config file is found, read it in.
+//	if err := viper.ReadInConfig(); err != nil {
+//		log.Warnf("WARNING: viper failed to discover and load the configuration file: %s", err.Error())
+//	}
+//}

@@ -7,7 +7,8 @@ import (
 	"regexp"
 	"sync"
 
-	v1 "github.com/marmotedu/api/apiserver/v1"
+	v1 "j-iam/internal/pkg/model/apiserver/v1"
+
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
 	"github.com/marmotedu/errors"
 	"github.com/marmotedu/iam/pkg/log"
