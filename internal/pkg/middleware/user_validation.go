@@ -12,7 +12,7 @@ import (
 	"j-iam/internal/pkg/code"
 )
 
-// Validation make sure users have the right resource permission and operation.
+// Validation 确保用户具有正确的资源权限和操作
 func Validation() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := isAdmin(c); err != nil {

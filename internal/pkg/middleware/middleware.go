@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"time"
 
+	gindump "j-iam/internal/pkg/middleware/gin_dump"
+
 	"github.com/gin-gonic/gin"
-	gindump "github.com/tpkeeper/gin-dump"
 )
 
 // Middlewares store registered middlewares.

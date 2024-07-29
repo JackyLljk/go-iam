@@ -21,24 +21,27 @@ func initRouter(g *gin.Engine) {
 
 // installMiddleware 注册通用（所有API都用的）中间件到 gin 路由引擎
 func installMiddleware(g *gin.Engine) {
-	gin.SetMode(gin.DebugMode)
+	//gin.SetMode(gin.DebugMode)
 }
 
 // installController 注册 RESTful API 到 gin 路由引擎
 func installController(g *gin.Engine) *gin.Engine {
 	// Middlewares.
 
-	// Auth Middleware 认证中间件
+	// 创建 jwt 认证中间件，并加载到 gin
 	jwtStrategy, _ := newJWTAuth().(auth.JWTStrategy)
 
 	// 登录 /login 需要 Basic 认证和 Bearer 认证
+	// TODO: 看看为什么 username 没有加载进 gin.Context
 	g.POST("/login", jwtStrategy.LoginHandler)
 	g.POST("/logout", jwtStrategy.LogoutHandler)
 
 	// 令牌刷新，刷新令牌的有效时间要长于认证
 	g.POST("/refresh", jwtStrategy.RefreshHandler)
 
+	// 基于策略模式，创建可切换的认证策略集
 	auto := newAutoAuth()
+
 	g.NoRoute(auto.AuthFunc(), func(c *gin.Context) {
 		core.WriteResponse(c, errors.WithCode(code.ErrPageNotFound, "Page not found."), nil)
 	})
@@ -53,7 +56,8 @@ func installController(g *gin.Engine) *gin.Engine {
 			userController := user.NewUserController(storeIns)
 
 			userv1.POST("", userController.Create)
-			//#############3
+
+			// 卡这里了！认证不通过
 			userv1.Use(auto.AuthFunc(), middleware.Validation()) // 为什么不让访问？？？
 			//v1.PUT("/find_password", userController.FindPassword)
 			userv1.DELETE("", userController.DeleteCollection) // admin api
@@ -64,6 +68,7 @@ func installController(g *gin.Engine) *gin.Engine {
 			userv1.GET(":name", userController.Get) // admin api
 		}
 
+		// 密钥和策略的访问需要认证通过才行
 		v1.Use(auto.AuthFunc())
 
 		// policy RESTful resource

@@ -37,6 +37,9 @@ func NewOptions() *Options {
 		//FeatureOptions:          genericoptions.NewFeatureOptions(),
 	}
 
+	// 这里直接赋值，还是要读配置好一点
+	o.GenericServerRunOptions.Middlewares = []string{"recovery", "logger", "nocache", "cors", "dump"}
+
 	return &o
 }
 

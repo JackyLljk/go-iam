@@ -12,11 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/marmotedu/component-base/pkg/core"
 	"github.com/marmotedu/component-base/pkg/version"
-	ginprometheus "github.com/zsais/go-gin-prometheus"
 	"golang.org/x/sync/errgroup"
 
 	"j-iam/internal/pkg/middleware"
@@ -38,9 +36,9 @@ type GenericAPIServer struct {
 	ShutdownTimeout time.Duration
 
 	*gin.Engine
-	health          bool
-	enableMetrics   bool
-	enableProfiling bool
+	health bool
+	//enableMetrics   bool
+	//enableProfiling bool
 	// wrapper for gin.Engine
 
 	insecureServer, secureServer *http.Server
@@ -65,15 +63,15 @@ func (s *GenericAPIServer) InstallAPIs() {
 	}
 
 	// install metric handler
-	if s.enableMetrics {
-		prometheus := ginprometheus.NewPrometheus("gin")
-		prometheus.Use(s.Engine)
-	}
+	//if s.enableMetrics {
+	//	prometheus := ginprometheus.NewPrometheus("gin")
+	//	prometheus.Use(s.Engine)
+	//}
 
 	// install pprof handler
-	if s.enableProfiling {
-		pprof.Register(s.Engine)
-	}
+	//if s.enableProfiling {
+	//	pprof.Register(s.Engine)
+	//}
 
 	s.GET("/version", func(c *gin.Context) {
 		core.WriteResponse(c, nil, version.Get())
@@ -176,7 +174,7 @@ func (s *GenericAPIServer) Run() error {
 	//	return nil
 	//})
 
-	// Ping the server to make sure the router is working.
+	// 对服务器执行 Ping 操作，确保路由器正常工作
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if s.health {
@@ -227,7 +225,7 @@ func (s *GenericAPIServer) ping(ctx context.Context) error {
 		if err == nil && resp.StatusCode == http.StatusOK {
 			log.Info("The router has been deployed successfully.")
 
-			resp.Body.Close()
+			_ = resp.Body.Close()
 
 			return nil
 		}

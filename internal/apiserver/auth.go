@@ -3,28 +3,30 @@ package apiserver
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
-
-	jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/gin-gonic/gin"
-	v1 "github.com/marmotedu/api/apiserver/v1"
-	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
-	"github.com/spf13/viper"
 
 	"j-iam/internal/apiserver/store"
 	"j-iam/internal/pkg/middleware"
 	"j-iam/internal/pkg/middleware/auth"
 	"j-iam/pkg/log"
+
+	v1 "j-iam/internal/pkg/model/apiserver/v1"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/gin-gonic/gin"
+	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
+	"github.com/spf13/viper"
 )
 
 const (
-	// APIServerAudience defines the value of jwt audience field.
-	APIServerAudience = "j-iam"
+	// 定义 jwt audience 字段（签发和验证时，aud 字段必须是一致的！）
+	apiServerAudience = "j-iam"
 
-	// APIServerIssuer defines the value of jwt issuer field.
-	APIServerIssuer = "j-apiserver"
+	// 定义 jwt issuer 字段，即 jwt token 的签发者
+	apiServerIssuer = "j-apiserver"
 )
 
 type loginInfo struct {
@@ -52,9 +54,9 @@ func newBasicAuth() middleware.AuthStrategy {
 	})
 }
 
-// newJWTAuth 新建 jwt
+// newJWTAuth 初始化 GinJWTMiddleware
 func newJWTAuth() middleware.AuthStrategy {
-	ginjwt, _ := jwt.New(&jwt.GinJWTMiddleware{
+	ginJWT, _ := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:            viper.GetString("jwt.Realm"),
 		SigningAlgorithm: "HS256",
 		Key:              []byte(viper.GetString("jwt.key")),
@@ -86,7 +88,7 @@ func newJWTAuth() middleware.AuthStrategy {
 		// TODO: HTTPStatusMessageFunc:
 	})
 
-	return auth.NewJWTStrategy(*ginjwt)
+	return auth.NewJWTStrategy(*ginJWT)
 }
 
 func newAutoAuth() middleware.AuthStrategy {
@@ -129,14 +131,14 @@ func authenticator() func(c *gin.Context) (interface{}, error) {
 }
 
 func parseWithHeader(c *gin.Context) (loginInfo, error) {
-	auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
-	if len(auth) != 2 || auth[0] != "Basic" {
+	authorization := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+	if len(authorization) != 2 || authorization[0] != "Basic" {
 		log.Errorf("get basic string from Authorization header failed")
 
 		return loginInfo{}, jwt.ErrFailedAuthentication
 	}
 
-	payload, err := base64.StdEncoding.DecodeString(auth[1])
+	payload, err := base64.StdEncoding.DecodeString(authorization[1])
 	if err != nil {
 		log.Errorf("decode basic string: %s", err.Error())
 
@@ -178,6 +180,7 @@ func refreshResponse() func(c *gin.Context, code int, token string, expire time.
 
 func loginResponse() func(c *gin.Context, code int, token string, expire time.Time) {
 	return func(c *gin.Context, code int, token string, expire time.Time) {
+		//log.Info(c.GetString("username"))
 		c.JSON(http.StatusOK, gin.H{
 			"token":  token,
 			"expire": expire.Format(time.RFC3339),
@@ -187,13 +190,15 @@ func loginResponse() func(c *gin.Context, code int, token string, expire time.Ti
 
 func payloadFunc() func(data interface{}) jwt.MapClaims {
 	return func(data interface{}) jwt.MapClaims {
+		fmt.Println(data)
 		claims := jwt.MapClaims{
-			"iss": APIServerIssuer,
-			"aud": APIServerAudience,
+			"iss": apiServerIssuer,
+			"aud": apiServerAudience,
 		}
 		if u, ok := data.(*v1.User); ok {
 			claims[jwt.IdentityKey] = u.Name
 			claims["sub"] = u.Name
+			fmt.Println(claims)
 		}
 
 		return claims
@@ -202,6 +207,7 @@ func payloadFunc() func(data interface{}) jwt.MapClaims {
 
 func authorizator() func(data interface{}, c *gin.Context) bool {
 	return func(data interface{}, c *gin.Context) bool {
+		log.Infof("here")
 		if v, ok := data.(string); ok {
 			log.L(c).Infof("user `%s` is authenticated.", v)
 

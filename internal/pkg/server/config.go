@@ -8,14 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	// RecommendedHomeDir defines the default directory used to place all iam service configurations.
-	RecommendedHomeDir = ".iam"
-	// RecommendedEnvPrefix defines the ENV prefix used by all iam service.
-	RecommendedEnvPrefix = "IAM"
-
-	jwtKey = "dfVpOK8LZeJLZHYmHdb1VdyRrACKpqoo" // jwt 密钥，临时保存（后面还是从配置中读取）
-)
+const jwtKey = "dfVpOK8LZeJLZHYmHdb1VdyRrACKpqoo" // jwt 密钥，临时保存（后面还是从配置中读取）
 
 // generic api service 应用配置
 
@@ -59,7 +52,7 @@ func NewConfig() *Config {
 		//EnableProfiling: true,
 		//EnableMetrics:   true,
 		Jwt: &JwtInfo{
-			Realm: "gin jwt",
+			Realm: "gin-jwt",
 			Key:   jwtKey,
 			//Timeout:    1 * time.Hour,
 			//MaxRefresh: 1 * time.Hour,

@@ -53,7 +53,6 @@ func (a AutoStrategy) AuthFunc() gin.HandlerFunc {
 			operator.SetStrategy(a.basic)
 		case "Bearer":
 			operator.SetStrategy(a.jwt)
-			//a.JWT.MiddlewareFunc()(c)
 		default:
 			core.WriteResponse(c, errors.WithCode(code.ErrSignatureInvalid, "unrecognized Authorization header."), nil)
 			c.Abort()
