@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-//package proto;
-option go_package = ".";
+package proto;
+option go_package = "j-iam/internal/pkg/proto/apiserver/v1";
 
 //go:generate protoc -I. --go_out=plugins=grpc:.
 
 
-// Cache implements a cache rpc service.
+// Cache 缓存RPC服务
 service Cache{
 	rpc ListSecrets(ListSecretsRequest) returns (ListSecretsResponse) {}
 	rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse) {}

@@ -4,15 +4,15 @@ import (
 	pb "j-iam/internal/pkg/proto/apiserver/v1"
 	"sync"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-
 	"j-iam/internal/authzserver/store"
 	"j-iam/pkg/log"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type datastore struct {
-	cli pb.CacheClient
+	client pb.CacheClient
 }
 
 func (ds *datastore) Secrets() store.SecretStore {
@@ -32,17 +32,17 @@ var (
 func GetAPIServerFactoryOrDie(address string, clientCA string) store.Factory {
 	once.Do(func() {
 		var (
-			err   error
-			conn  *grpc.ClientConn
-			creds credentials.TransportCredentials
+			err  error
+			conn *grpc.ClientConn
+			//creds credentials.TransportCredentials
 		)
 
-		creds, err = credentials.NewClientTLSFromFile(clientCA, "")
-		if err != nil {
-			log.Panicf("credentials.NewClientTLSFromFile err: %v", err)
-		}
+		//creds, err = credentials.NewClientTLSFromFile(clientCA, "j-apiserver-rpc")
+		//if err != nil {
+		//	log.Panicf("credentials.NewClientTLSFromFile err: %v", err)
+		//}
 
-		conn, err = grpc.Dial(address, grpc.WithTransportCredentials(creds))
+		conn, err = grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			log.Panicf("Connect to grpc server failed, error: %s", err.Error())
 		}

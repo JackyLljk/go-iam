@@ -35,6 +35,8 @@ func installController(g *gin.Engine) *gin.Engine {
 		authzController := authorize.NewAuthzController(cacheIns)
 
 		// Router for authorization
+		// apiserver 端创建认证策略
+
 		apiv1.POST("/authz", authzController.Authorize)
 	}
 

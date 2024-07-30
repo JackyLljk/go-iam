@@ -67,7 +67,7 @@ func installController(g *gin.Engine) *gin.Engine {
 		}
 
 		// 密钥和策略的访问需要认证通过才行
-		v1.Use(auto.AuthFunc())
+		v1.Use(auto.AuthFunc(), middleware.Validation())
 
 		// policy RESTful resource
 		policyv1 := v1.Group("/policies", middleware.Publish())

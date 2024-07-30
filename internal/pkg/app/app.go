@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/fatih/color"
 	"github.com/marmotedu/component-base/pkg/cli/globalflag"
 	"github.com/marmotedu/component-base/pkg/term"
@@ -9,7 +11,6 @@ import (
 	"github.com/marmotedu/component-base/pkg/version/verflag"
 	"github.com/marmotedu/errors"
 	"github.com/marmotedu/log"
-	"os"
 
 	cliflag "github.com/marmotedu/component-base/pkg/cli/flag"
 	"github.com/spf13/cobra"

@@ -2,7 +2,6 @@ package authzserver
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/marmotedu/errors"
 
@@ -140,8 +139,6 @@ func (s *authzServer) initialize() error {
 	// keep redis connected
 	go storage.ConnectToRedis(ctx, s.buildStorageConfig())
 
-	// cron 从 iam-apiserver 重新加载所有密钥和策略
-	fmt.Println("ca: ", s.clientCA) // 卡这里了
 	cacheIns, err := cache.GetCacheInsOr(apiserver.GetAPIServerFactoryOrDie(s.rpcServer, s.clientCA))
 	if err != nil {
 		return errors.Wrap(err, "get cache instance failed")

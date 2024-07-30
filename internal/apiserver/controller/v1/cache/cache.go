@@ -7,21 +7,18 @@ import (
 	v1 "j-iam/internal/pkg/proto/apiserver/v1"
 	"sync"
 
-	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
-	"github.com/marmotedu/errors"
-
 	"j-iam/internal/apiserver/store"
 	"j-iam/internal/pkg/code"
 	"j-iam/pkg/log"
+
+	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
+	"github.com/marmotedu/errors"
 )
 
 // Cache defines a cache service used to list all secrets and policies.
 type Cache struct {
 	store store.Factory
 	v1.UnimplementedCacheServer
-}
-
-func (c *Cache) mustEmbedUnimplementedCacheServer() {
 }
 
 var (

@@ -12,10 +12,10 @@ import (
 	"j-iam/internal/authzserver/store"
 )
 
-// Cache is used to store secrets and policies.
+// Cache 存储 secrets 和 policies
 type Cache struct {
 	lock     *sync.RWMutex
-	cli      store.Factory
+	client   store.Factory
 	secrets  *ristretto.Cache
 	policies *ristretto.Cache
 }
@@ -33,9 +33,9 @@ var (
 )
 
 // GetCacheInsOr return store instance.
-func GetCacheInsOr(cli store.Factory) (*Cache, error) {
+func GetCacheInsOr(client store.Factory) (*Cache, error) {
 	var err error
-	if cli != nil {
+	if client != nil {
 		var (
 			secretCache *ristretto.Cache
 			policyCache *ristretto.Cache
@@ -59,7 +59,7 @@ func GetCacheInsOr(cli store.Factory) (*Cache, error) {
 			}
 
 			cacheIns = &Cache{
-				cli:      cli,
+				client:   client,
 				lock:     new(sync.RWMutex),
 				secrets:  secretCache,
 				policies: policyCache,
@@ -99,12 +99,12 @@ func (c *Cache) GetPolicy(key string) ([]*ladon.DefaultPolicy, error) {
 // Reload 加载 secrets 和 policies (启动 authzserver 和 订阅到更新后重新加载)
 // TODO: 看看是不是全量加载，后续应该要改成增量更新，看看怎么实现？
 func (c *Cache) Reload() error {
-	//
+	// TODO：使用 gRPC 加载数据到内存，为什么要加锁？
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
 	// reload secrets
-	secrets, err := c.cli.Secrets().List()
+	secrets, err := c.client.Secrets().List()
 	if err != nil {
 		return errors.Wrap(err, "list secrets failed")
 	}
@@ -115,7 +115,7 @@ func (c *Cache) Reload() error {
 	}
 
 	// reload policies
-	policies, err := c.cli.Policies().List()
+	policies, err := c.client.Policies().List()
 	if err != nil {
 		return errors.Wrap(err, "list policies failed")
 	}

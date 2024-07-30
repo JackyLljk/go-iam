@@ -16,7 +16,6 @@ import (
 	"j-iam/pkg/storage"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -130,12 +129,14 @@ func (s preparedAPIServer) Run() error {
 
 // New 创建 gRPC 实例
 func (c *completedExtraConfig) New() (*grpcAPIServer, error) { // 加上 grpc 服务
+	// TODO: 后面看看怎么实现基于 TLS 的传输
 	//creds, err := credentials.NewServerTLSFromFile(c.ServerCert.CertKey.CertFile, c.ServerCert.CertKey.KeyFile)
-	creds, err := credentials.NewServerTLSFromFile("cert/server.pem", "cert/server.key") // 临时使用一下
-	if err != nil {
-		log.Fatalf("Failed to generate credentials %s", err.Error())
-	}
-	opts := []grpc.ServerOption{grpc.MaxRecvMsgSize(c.MaxMsgSize), grpc.Creds(creds)}
+	//creds, err := credentials.NewServerTLSFromFile("cert/server.pem", "cert/server.key") // 临时使用一下
+	//if err != nil {
+	//	log.Fatalf("Failed to generate credentials %s", err.Error())
+	//}
+	//opts := []grpc.ServerOption{grpc.MaxRecvMsgSize(c.MaxMsgSize), grpc.Creds(creds)}
+	opts := []grpc.ServerOption{grpc.MaxRecvMsgSize(c.MaxMsgSize)}
 	grpcServer := grpc.NewServer(opts...)
 
 	storeIns, _ := mysql.GetMySQLFactory(c.mysqlOptions)

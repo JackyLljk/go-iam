@@ -18,7 +18,7 @@ type policies struct {
 }
 
 func newPolicies(ds *datastore) *policies {
-	return &policies{ds.cli}
+	return &policies{ds.client}
 }
 
 // List returns all the authorization policies.

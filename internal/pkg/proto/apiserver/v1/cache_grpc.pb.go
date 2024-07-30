@@ -4,7 +4,7 @@
 // - protoc             v3.20.3
 // source: cache.proto
 
-package __
+package v1
 
 import (
 	context "context"
@@ -36,7 +36,7 @@ func NewCacheClient(cc grpc.ClientConnInterface) CacheClient {
 
 func (c *cacheClient) ListSecrets(ctx context.Context, in *ListSecretsRequest, opts ...grpc.CallOption) (*ListSecretsResponse, error) {
 	out := new(ListSecretsResponse)
-	err := c.cc.Invoke(ctx, "/Cache/ListSecrets", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Cache/ListSecrets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (c *cacheClient) ListSecrets(ctx context.Context, in *ListSecretsRequest, o
 
 func (c *cacheClient) ListPolicies(ctx context.Context, in *ListPoliciesRequest, opts ...grpc.CallOption) (*ListPoliciesResponse, error) {
 	out := new(ListPoliciesResponse)
-	err := c.cc.Invoke(ctx, "/Cache/ListPolicies", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Cache/ListPolicies", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func _Cache_ListSecrets_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Cache/ListSecrets",
+		FullMethod: "/proto.Cache/ListSecrets",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CacheServer).ListSecrets(ctx, req.(*ListSecretsRequest))
@@ -112,7 +112,7 @@ func _Cache_ListPolicies_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Cache/ListPolicies",
+		FullMethod: "/proto.Cache/ListPolicies",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CacheServer).ListPolicies(ctx, req.(*ListPoliciesRequest))
@@ -124,7 +124,7 @@ func _Cache_ListPolicies_Handler(srv interface{}, ctx context.Context, dec func(
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Cache_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Cache",
+	ServiceName: "proto.Cache",
 	HandlerType: (*CacheServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -12,14 +12,14 @@ import (
 )
 
 type secrets struct {
-	cli v1.CacheClient
+	client v1.CacheClient
 }
 
 func newSecrets(ds *datastore) *secrets {
-	return &secrets{ds.cli}
+	return &secrets{ds.client}
 }
 
-// List returns all the authorization secrets.
+// List 返回所有的授权密钥 secrets
 func (s *secrets) List() (map[string]*v1.SecretInfo, error) {
 	secrets := make(map[string]*v1.SecretInfo)
 
@@ -34,7 +34,7 @@ func (s *secrets) List() (map[string]*v1.SecretInfo, error) {
 	err := retry.Do(
 		func() error {
 			var listErr error
-			resp, listErr = s.cli.ListSecrets(context.Background(), req)
+			resp, listErr = s.client.ListSecrets(context.Background(), req)
 			if listErr != nil {
 				return listErr
 			}
