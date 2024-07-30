@@ -45,6 +45,7 @@ func installController(g *gin.Engine) *gin.Engine {
 	})
 
 	// v1 handlers, requiring authentication
+	// TODO 用户可以访问的接口：创建用户、更换密码、更新用户信息；查询自己的策略，查询自己的密钥；其他接口应该限定只能管理员访问！（参考一下华子的认证流程、权限管理）
 	storeIns, _ := mysql.GetMySQLFactory(nil)
 	v1 := g.Group("/v1")
 	{
@@ -53,10 +54,9 @@ func installController(g *gin.Engine) *gin.Engine {
 		{
 			userController := user.NewUserController(storeIns)
 
-			userv1.POST("", userController.Create)
+			userv1.POST("", userController.Create) // 密码有大写字母，用户名不能重复
 
-			// 卡这里了！认证不通过
-			userv1.Use(auto.AuthFunc(), middleware.Validation()) // 为什么不让访问？？？
+			userv1.Use(auto.AuthFunc(), middleware.Validation())
 			//v1.PUT("/find_password", userController.FindPassword)
 			userv1.DELETE("", userController.DeleteCollection) // admin api
 			userv1.DELETE(":name", userController.Delete)      // admin api
