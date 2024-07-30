@@ -126,6 +126,9 @@ func authenticator() func(c *gin.Context) (interface{}, error) {
 		user.LoginedAt = time.Now()
 		_ = store.Client().Users().Update(c, user, metav1.UpdateOptions{})
 
+		// 登录认证通过后，将 username 添加到 gin.Context
+		c.Set(middleware.UsernameKey, login.Username)
+
 		return user, nil
 	}
 }
