@@ -41,6 +41,7 @@ func NewOptions() *Options {
 		//FeatureOptions:          genericoptions.NewFeatureOptions(),
 	}
 
+	o.GenericServerRunOptions.Middlewares = []string{"recovery", "logger", "nocache", "cors", "dump"}
 	o.InsecureServing.BindPort = 8082
 
 	return &o

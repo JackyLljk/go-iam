@@ -27,12 +27,10 @@ func installMiddleware(g *gin.Engine) {
 // installController 注册 RESTful API 到 gin 路由引擎
 func installController(g *gin.Engine) *gin.Engine {
 	// Middlewares.
-
 	// 创建 jwt 认证中间件，并加载到 gin
 	jwtStrategy, _ := newJWTAuth().(auth.JWTStrategy)
 
 	// 登录 /login 需要 Basic 认证和 Bearer 认证
-	// TODO: 看看为什么 username 没有加载进 gin.Context
 	g.POST("/login", jwtStrategy.LoginHandler)
 	g.POST("/logout", jwtStrategy.LogoutHandler)
 

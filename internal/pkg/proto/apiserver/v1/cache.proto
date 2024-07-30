@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+//package proto;
 option go_package = ".";
 
 //go:generate protoc -I. --go_out=plugins=grpc:.

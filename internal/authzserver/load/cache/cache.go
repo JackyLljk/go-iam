@@ -96,8 +96,10 @@ func (c *Cache) GetPolicy(key string) ([]*ladon.DefaultPolicy, error) {
 	return value.([]*ladon.DefaultPolicy), nil
 }
 
-// Reload reload secrets and policies.
+// Reload 加载 secrets 和 policies (启动 authzserver 和 订阅到更新后重新加载)
+// TODO: 看看是不是全量加载，后续应该要改成增量更新，看看怎么实现？
 func (c *Cache) Reload() error {
+	//
 	c.lock.Lock()
 	defer c.lock.Unlock()
 

@@ -2,7 +2,7 @@ package apiserver
 
 import (
 	"context"
-	"j-iam/internal/pkg/proto/apiserver/v1"
+	v1 "j-iam/internal/pkg/proto/apiserver/v1"
 
 	"github.com/AlekSi/pointer"
 	"github.com/avast/retry-go"

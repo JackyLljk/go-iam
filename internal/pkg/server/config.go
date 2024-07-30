@@ -46,7 +46,7 @@ func (s *SecureServingInfo) Address() string {
 
 func NewConfig() *Config {
 	return &Config{
-		Health:      true,
+		Health:      false,
 		Mode:        gin.ReleaseMode,
 		Middlewares: []string{},
 		//EnableProfiling: true,

@@ -4,7 +4,7 @@ package cache
 import (
 	"context"
 	"fmt"
-	"j-iam/internal/pkg/proto/apiserver/v1"
+	v1 "j-iam/internal/pkg/proto/apiserver/v1"
 	"sync"
 
 	metav1 "github.com/marmotedu/component-base/pkg/meta/v1"
